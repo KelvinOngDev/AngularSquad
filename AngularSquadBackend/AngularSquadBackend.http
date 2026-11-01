@@ -1,0 +1,14 @@
+@AngularSquadBackend_HostAddress = https://localhost:7001
+@token = replace-with-a-valid-jwt
+
+### Get a doctor's details for today
+GET {{AngularSquadBackend_HostAddress}}/api/dokter/1/details
+Authorization: Bearer {{token}}
+Accept: application/json
+
+###
+
+### Doctor not found
+GET {{AngularSquadBackend_HostAddress}}/api/dokter/999999/details
+Authorization: Bearer {{token}}
+Accept: application/json
