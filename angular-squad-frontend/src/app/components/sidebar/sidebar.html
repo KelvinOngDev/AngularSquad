@@ -1,0 +1,29 @@
+<aside class="flex h-full flex-col bg-slate-900 px-3 py-6 text-white md:px-5">
+  <a routerLink="/dashboard" class="mb-10 px-2 text-lg font-bold tracking-wide md:text-xl">
+    <span class="md:hidden">AS</span>
+    <span class="hidden md:inline">Belajar Angular</span>
+  </a>
+
+  <nav aria-label="Main navigation" class="flex flex-col gap-2">
+    @if (loadError(); as error) {
+      <p role="alert" class="px-3 py-2 text-sm text-red-300">{{ error }}</p>
+    } @else if (isLoading()) {
+      <p class="px-3 py-2 text-sm text-slate-400">Memuat menu...</p>
+    } @else if (menus().length === 0) {
+      <p class="px-3 py-2 text-sm text-slate-400">Belum ada menu aktif.</p>
+    }
+
+    @for (menu of rootMenus(); track menu.id) {
+      <app-sidebar-menu-item [menu]="menu" />
+    }
+  </nav>
+
+  <button
+    type="button"
+    (click)="logout()"
+    class="mt-auto rounded-lg px-3 py-3 text-left text-sm text-slate-300 transition hover:bg-red-950 hover:text-white md:px-4"
+  >
+    <span class="md:hidden">Keluar</span>
+    <span class="hidden md:inline">Keluar</span>
+  </button>
+</aside>

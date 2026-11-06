@@ -1,0 +1,87 @@
+@if (menu().children.length > 0) {
+  <div class="flex items-center rounded-lg text-sm text-slate-300 transition hover:bg-slate-800 hover:text-white">
+    @if (menu().url_menu) {
+      <a
+        [routerLink]="menu().url_menu"
+        routerLinkActive="bg-slate-700 text-white"
+        [routerLinkActiveOptions]="{ exact: true }"
+        [attr.aria-label]="menu().menu_name"
+        class="min-w-0 flex-1 rounded-l-lg px-3 py-3 md:px-4"
+      >
+        <span class="md:hidden">{{ menu().menu_name.slice(0, 1) }}</span>
+        <span class="hidden truncate md:inline">{{ menu().menu_name }}</span>
+      </a>
+      <button
+        type="button"
+        (click)="toggle()"
+        [attr.aria-label]="(expanded() ? 'Collapse ' : 'Expand ') + menu().menu_name"
+        [attr.aria-expanded]="expanded()"
+        [attr.aria-controls]="'menu-children-' + menu().id"
+        class="rounded-r-lg px-3 py-3"
+      >
+        <svg
+          aria-hidden="true"
+          class="h-4 w-4 transition-transform duration-200"
+          [class.rotate-90]="expanded()"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 0 1 .02-1.06L10.94 10 7.23 6.29a.75.75 0 1 1 1.06-1.06l4.24 4.24a.75.75 0 0 1 0 1.06l-4.24 4.24a.75.75 0 0 1-1.08 0Z" clip-rule="evenodd" />
+        </svg>
+      </button>
+    } @else {
+      <button
+        type="button"
+        (click)="toggle()"
+        [attr.aria-label]="(expanded() ? 'Collapse ' : 'Expand ') + menu().menu_name"
+        [attr.aria-expanded]="expanded()"
+        [attr.aria-controls]="'menu-children-' + menu().id"
+        class="flex w-full items-center justify-between rounded-lg px-3 py-3 text-left md:px-4"
+      >
+        <span class="md:hidden">{{ menu().menu_name.slice(0, 1) }}</span>
+        <span class="hidden truncate md:inline">{{ menu().menu_name }}</span>
+        <svg
+          aria-hidden="true"
+          class="h-4 w-4 shrink-0 transition-transform duration-200"
+          [class.rotate-90]="expanded()"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+        >
+          <path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 0 1 .02-1.06L10.94 10 7.23 6.29a.75.75 0 1 1 1.06-1.06l4.24 4.24a.75.75 0 0 1 0 1.06l-4.24 4.24a.75.75 0 0 1-1.08 0Z" clip-rule="evenodd" />
+        </svg>
+      </button>
+    }
+  </div>
+
+  <div
+    [id]="'menu-children-' + menu().id"
+    class="menu-children"
+    [class.is-expanded]="expanded()"
+    [attr.aria-hidden]="!expanded()"
+    [attr.inert]="expanded() ? null : ''"
+  >
+    <div class="menu-children-inner">
+      <div class="ml-3 flex flex-col gap-1 border-l border-slate-700 py-1 pl-2 md:ml-4 md:pl-3">
+        @for (child of menu().children; track child.id) {
+          <app-sidebar-menu-item [menu]="child" />
+        }
+      </div>
+    </div>
+  </div>
+} @else if (menu().url_menu) {
+  <a
+    [routerLink]="menu().url_menu"
+    routerLinkActive="bg-slate-700 text-white"
+    [routerLinkActiveOptions]="{ exact: true }"
+    [attr.aria-label]="menu().menu_name"
+    class="block rounded-lg px-3 py-3 text-sm text-slate-300 transition hover:bg-slate-800 hover:text-white md:px-4"
+  >
+    <span class="md:hidden">{{ menu().menu_name.slice(0, 1) }}</span>
+    <span class="hidden truncate md:inline">{{ menu().menu_name }}</span>
+  </a>
+} @else {
+  <span class="block rounded-lg px-3 py-3 text-sm text-slate-300 md:px-4">
+    <span class="md:hidden">{{ menu().menu_name.slice(0, 1) }}</span>
+    <span class="hidden truncate md:inline">{{ menu().menu_name }}</span>
+  </span>
+}
