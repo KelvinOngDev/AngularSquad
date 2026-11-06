@@ -1,5 +1,5 @@
-using System.Text.Json.Serialization;
 using AngularSquadBackend.Data;
+using AngularSquadBackend.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -11,8 +11,8 @@ namespace AngularSquadBackend.Controllers;
 [Authorize]
 public class MenuController(AppDbContext dbContext) : ControllerBase
 {
-    [HttpGet("my")]
-    public async Task<ActionResult<IEnumerable<MenuResponse>>> GetMenus(CancellationToken cancellationToken)
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<MenuDto>>> GetMenus(CancellationToken cancellationToken)
     {
         var menus = await dbContext.Menus
             .AsNoTracking()
@@ -22,17 +22,39 @@ public class MenuController(AppDbContext dbContext) : ControllerBase
                 menu.Id,
                 menu.MenuName,
                 menu.UrlMenu,
-                menu.ParentId,
-                menu.IsActive))
+                menu.ParentId))
             .ToListAsync(cancellationToken);
 
-        return Ok(menus);
+        var menusById = menus.ToDictionary(
+            menu => menu.Id,
+            menu => new MenuDto
+            {
+                Id = menu.Id,
+                MenuName = menu.MenuName,
+                UrlMenu = menu.UrlMenu,
+                ParentId = menu.ParentId,
+            });
+        var rootMenus = new List<MenuDto>();
+
+        foreach (var menu in menus)
+        {
+            var menuDto = menusById[menu.Id];
+            if (menu.ParentId == 0)
+            {
+                rootMenus.Add(menuDto);
+            }
+            else if (menusById.TryGetValue(menu.ParentId, out var parent))
+            {
+                parent.Children.Add(menuDto);
+            }
+        }
+
+        return Ok(rootMenus);
     }
 
-    public sealed record MenuResponse(
-        [property: JsonPropertyName("id")] int Id,
-        [property: JsonPropertyName("menu_name")] string MenuName,
-        [property: JsonPropertyName("url_menu")] string UrlMenu,
-        [property: JsonPropertyName("parent_id")] int ParentId,
-        [property: JsonPropertyName("is_active")] int IsActive);
+    private sealed record MenuResponse(
+        int Id,
+        string MenuName,
+        string UrlMenu,
+        int ParentId);
 }

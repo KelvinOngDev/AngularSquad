@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/Users/mac/Projects/AngularUAS/AngularSquadBackend/AngularSquadBackend.csproj": {}
+    "/Users/mac/Projects/AngularSquad/AngularSquadBackend/AngularSquadBackend.csproj": {}
   },
   "projects": {
-    "/Users/mac/Projects/AngularUAS/AngularSquadBackend/AngularSquadBackend.csproj": {
+    "/Users/mac/Projects/AngularSquad/AngularSquadBackend/AngularSquadBackend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/mac/Projects/AngularUAS/AngularSquadBackend/AngularSquadBackend.csproj",
+        "projectUniqueName": "/Users/mac/Projects/AngularSquad/AngularSquadBackend/AngularSquadBackend.csproj",
         "projectName": "AngularSquadBackend",
-        "projectPath": "/Users/mac/Projects/AngularUAS/AngularSquadBackend/AngularSquadBackend.csproj",
+        "projectPath": "/Users/mac/Projects/AngularSquad/AngularSquadBackend/AngularSquadBackend.csproj",
         "packagesPath": "/Users/mac/.nuget/packages/",
-        "outputPath": "/Users/mac/Projects/AngularUAS/AngularSquadBackend/obj/",
+        "outputPath": "/Users/mac/Projects/AngularSquad/AngularSquadBackend/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/Users/mac/.nuget/NuGet/NuGet.Config"
