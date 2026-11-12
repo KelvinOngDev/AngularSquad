@@ -16,6 +16,9 @@ public sealed class MenuDto
     [JsonPropertyName("parent_id")]
     public int ParentId { get; init; }
 
+    [JsonPropertyName("is_active")]
+    public int IsActive { get; init; }
+
     [JsonPropertyName("children")]
     public List<MenuDto> Children { get; } = [];
 }

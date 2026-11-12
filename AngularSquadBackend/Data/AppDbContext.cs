@@ -113,16 +113,26 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.HasIndex(user => user.Username).IsUnique();
         });
 
-        modelBuilder.Entity<PrivilegeUser>()
-            .HasOne(privilege => privilege.User)
-            .WithMany()
-            .HasForeignKey(privilege => privilege.UserId)
-            .OnDelete(DeleteBehavior.Restrict);
-
-        modelBuilder.Entity<PrivilegeUser>()
-            .HasOne(privilege => privilege.Menu)
-            .WithMany()
-            .HasForeignKey(privilege => privilege.MenuId)
-            .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<PrivilegeUser>(entity =>
+        {
+            entity.ToTable("table_privilege_user");
+            entity.HasKey(privilege => privilege.Id);
+            entity.Property(privilege => privilege.Id).HasColumnName("id");
+            entity.Property(privilege => privilege.UserId).HasColumnName("id_user");
+            entity.Property(privilege => privilege.MenuId).HasColumnName("id_menu");
+            entity.Property(privilege => privilege.IsActive).HasColumnName("is_active");
+            entity.Property(privilege => privilege.CanRead).HasColumnName("load");
+            entity.Property(privilege => privilege.CanCreate).HasColumnName("create");
+            entity.Property(privilege => privilege.CanUpdate).HasColumnName("update");
+            entity.Property(privilege => privilege.CanDelete).HasColumnName("delete");
+            entity.HasOne(privilege => privilege.User)
+                .WithMany()
+                .HasForeignKey(privilege => privilege.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(privilege => privilege.Menu)
+                .WithMany()
+                .HasForeignKey(privilege => privilege.MenuId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
     }
 }

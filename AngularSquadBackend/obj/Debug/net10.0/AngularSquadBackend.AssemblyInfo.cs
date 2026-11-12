@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AngularSquadBackend")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+378ae25717c96459a27d99b154250c2646f592f3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f13d8b8b84127fadcad68f2e4e96b5ded11f12d2")]
 [assembly: System.Reflection.AssemblyProductAttribute("AngularSquadBackend")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AngularSquadBackend")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

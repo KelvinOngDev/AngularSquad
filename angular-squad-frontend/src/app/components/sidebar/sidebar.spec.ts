@@ -25,6 +25,7 @@ describe('Sidebar', () => {
                 menu_name: 'Dashboard',
                 url_menu: '/dashboard',
                 parent_id: 0,
+                is_active: 1,
                 children: [],
               },
               {
@@ -32,18 +33,21 @@ describe('Sidebar', () => {
                 menu_name: 'Master Data',
                 url_menu: '',
                 parent_id: 0,
+                is_active: 1,
                 children: [
                   {
                     id: 3,
                     menu_name: 'Data Barang',
                     url_menu: '/data-barang',
                     parent_id: 2,
+                    is_active: 1,
                     children: [
                       {
                         id: 4,
                         menu_name: 'CRUD Features',
                         url_menu: '/crud-features',
                         parent_id: 3,
+                        is_active: 1,
                         children: [],
                       },
                     ],

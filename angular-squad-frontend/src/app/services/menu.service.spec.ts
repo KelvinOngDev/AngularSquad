@@ -26,6 +26,7 @@ describe('MenuService', () => {
         menu_name: 'CRUD Features',
         url_menu: '/crud-features',
         parent_id: 0,
+        is_active: 1,
         children: [],
       },
     ];
@@ -36,6 +37,20 @@ describe('MenuService', () => {
 
     const request = httpTesting.expectOne('https://localhost:7001/api/menu');
     expect(request.request.method).toBe('GET');
+    request.flush(response);
+  });
+
+  it('sends selected IDs in the bulk-delete request body', () => {
+    const ids = [2, 4, 7];
+    const response = { message: '3 menu(s) deleted successfully.', deletedCount: 3 };
+
+    service.bulkDelete(ids).subscribe((result) => {
+      expect(result).toEqual(response);
+    });
+
+    const request = httpTesting.expectOne('https://localhost:7001/api/menu/bulk-delete');
+    expect(request.request.method).toBe('DELETE');
+    expect(request.request.body).toEqual(ids);
     request.flush(response);
   });
 });

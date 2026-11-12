@@ -8,6 +8,8 @@ public class PrivilegeUser
 
     public int MenuId { get; set; }
 
+    public bool IsActive { get; set; }
+
     public bool CanRead { get; set; }
 
     public bool CanCreate { get; set; }
