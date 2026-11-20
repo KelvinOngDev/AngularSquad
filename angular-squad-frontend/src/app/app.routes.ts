@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { Chat } from './chat/chat';
+import { NotificationComponent } from './components/notification/notification';
 import { authGuard } from './guards/auth.guard';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { DataBarang } from './pages/data-barang/data-barang';
@@ -10,6 +12,8 @@ import { UserManagement } from './pages/user-management/user-management';
 
 export const routes: Routes = [
   { path: 'login', component: Login },
+  { path: 'signalr', component: NotificationComponent, canActivate: [authGuard] },
+  { path: 'chat', component: Chat, canActivate: [authGuard] },
   { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
   { path: 'dashboard', component: Dashboard, canActivate: [authGuard] },
   { path: 'data-barang', component: DataBarang, canActivate: [authGuard] },

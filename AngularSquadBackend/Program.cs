@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 
 var jwtKey = builder.Configuration["Jwt:Key"]
     ?? throw new InvalidOperationException(
@@ -52,7 +53,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AngularFrontend", policy =>
         policy.WithOrigins("http://localhost:4200")
             .AllowAnyHeader()
-            .AllowAnyMethod());
+            .AllowAnyMethod()
+            .AllowCredentials());
 });
 
 var app = builder.Build();
@@ -68,5 +70,7 @@ app.UseCors("AngularFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<AngularSquadBackend.Hubs.NotificationHub>("/notificationHub");
+app.MapHub<AngularSquadBackend.Hubs.ChatHub>("/chatHub");
 
 app.Run();

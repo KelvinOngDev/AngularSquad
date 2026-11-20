@@ -10,4 +10,5 @@ import { AuthService } from './services/auth.service';
   styleUrl: './app.css',
 })
 export class App {
-  protected readonly auth = inject(AuthService);}
+  protected readonly auth = inject(AuthService);
+}

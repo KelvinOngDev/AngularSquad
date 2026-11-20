@@ -1,0 +1,101 @@
+<div class="flex justify-center p-6">
+  <div class="flex h-[560px] w-full max-w-2xl flex-col rounded-xl border border-gray-200 bg-white shadow-md">
+    <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+      <div>
+        <h2 class="text-lg font-bold text-gray-800">SignalR Live Chat</h2>
+        <p class="text-xs text-gray-500">Hub: https://localhost:7001/chatHub</p>
+      </div>
+
+      @if (chatService.isConnected()) {
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
+          <span class="h-2 w-2 rounded-full bg-green-500"></span>
+          Connected
+        </span>
+      } @else {
+        <span class="inline-flex items-center gap-1.5 rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-800">
+          <span class="h-2 w-2 rounded-full bg-red-500"></span>
+          Disconnected
+        </span>
+      }
+    </div>
+
+    @if (!isJoined()) {
+      <form (ngSubmit)="joinRoom()" class="flex items-center gap-3 border-b border-blue-100 bg-blue-50/60 px-6 py-3">
+        <input
+          type="text"
+          name="userName"
+          [(ngModel)]="userName"
+          placeholder="Masukkan nama Anda untuk mulai chat..."
+          class="flex-1 rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <button
+          type="submit"
+          [disabled]="!userName.trim() || !chatService.isConnected()"
+          class="rounded-lg bg-blue-600 px-4 py-1.5 text-sm font-medium text-white transition hover:bg-blue-700 disabled:bg-gray-300"
+        >
+          Gabung
+        </button>
+      </form>
+    } @else {
+      <div class="flex items-center justify-between border-b border-gray-200 bg-gray-50 px-6 py-2.5 text-xs text-gray-600">
+        <span>Masuk sebagai: <strong class="text-gray-900">{{ userName }}</strong></span>
+        <button type="button" (click)="isJoined.set(false)" class="text-blue-600 hover:underline">
+          Ganti Nama
+        </button>
+      </div>
+    }
+
+    <div class="flex-1 space-y-3 overflow-y-auto bg-gray-50/50 p-6">
+      @if (items().length === 0) {
+        <div class="flex h-full items-center justify-center text-sm italic text-gray-400">
+          Belum ada percakapan. Masukkan nama lalu kirim pesan pertama!
+        </div>
+      } @else {
+        @for (item of items(); track $index) {
+          @if (item.type === 'system') {
+            <div class="my-2 text-center">
+              <span class="rounded-full bg-gray-200/80 px-3 py-1 text-xs text-gray-600">
+                {{ item.text }} • {{ item.time }}
+              </span>
+            </div>
+          } @else {
+            <div class="flex flex-col" [class.items-end]="item.user === userName" [class.items-start]="item.user !== userName">
+              <span class="mb-1 px-1 text-xs text-gray-500">
+                {{ item.user }} • {{ item.time }}
+              </span>
+              <div
+                class="max-w-xs break-words rounded-2xl px-4 py-2.5 text-sm shadow-sm md:max-w-md"
+                [class.bg-blue-600]="item.user === userName"
+                [class.text-white]="item.user === userName"
+                [class.bg-white]="item.user !== userName"
+                [class.text-gray-800]="item.user !== userName"
+                [class.border]="item.user !== userName"
+                [class.border-gray-200]="item.user !== userName"
+              >
+                {{ item.text }}
+              </div>
+            </div>
+          }
+        }
+      }
+    </div>
+
+    <form (ngSubmit)="send()" class="flex gap-2 rounded-b-xl border-t border-gray-200 bg-white p-4">
+      <input
+        type="text"
+        name="messageInput"
+        [(ngModel)]="messageInput"
+        [disabled]="!isJoined()"
+        placeholder="Ketik pesan..."
+        class="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+      />
+      <button
+        type="submit"
+        [disabled]="!isJoined() || !messageInput.trim() || !chatService.isConnected()"
+        class="rounded-lg bg-blue-600 px-5 py-2 text-sm font-medium text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
+      >
+        Kirim
+      </button>
+    </form>
+  </div>
+</div>
