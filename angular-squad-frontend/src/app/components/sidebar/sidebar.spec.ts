@@ -73,28 +73,27 @@ describe('Sidebar', () => {
   it('should render menu entries and their nested links', () => {
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.textContent).toContain('Dashboard');
+    const dashboardLink = [...compiled.querySelectorAll<HTMLAnchorElement>('a')]
+      .find((link) => link.textContent?.includes('Dashboard'));
+    const dashboardHost = dashboardLink?.closest('app-sidebar-menu-item');
+    expect(dashboardHost?.classList.contains('submenu-host')).toBeFalse();
+    expect(dashboardHost?.classList.contains('submenu-open')).toBeFalse();
+    expect(dashboardHost?.querySelector('.right')).toBeFalsy();
     expect(compiled.textContent).toContain('Master Data');
+    const masterHost = compiled.querySelector('#menu-children-2')?.closest('app-sidebar-menu-item');
+    expect(masterHost?.classList.contains('submenu-host')).toBeTrue();
+    expect(compiled.querySelector('#menu-children-2')?.getAttribute('aria-hidden')).toBe('false');
+
+    const masterToggle = masterHost?.querySelector<HTMLButtonElement>('.submenu-toggle');
+    expect(masterToggle?.getAttribute('aria-expanded')).toBe('true');
+    masterToggle?.click();
+    fixture.detectChanges();
+
+    expect(masterToggle?.getAttribute('aria-expanded')).toBe('false');
     expect(compiled.querySelector('#menu-children-2')?.getAttribute('aria-hidden')).toBe('true');
 
-    const masterDataButton = compiled.querySelector<HTMLButtonElement>(
-      'button[aria-label="Expand Master Data"]',
-    );
-    masterDataButton?.click();
+    masterToggle?.click();
     fixture.detectChanges();
-
-    expect(masterDataButton?.getAttribute('aria-expanded')).toBe('true');
-    expect(compiled.querySelector('#menu-children-2')?.getAttribute('aria-hidden')).toBe('false');
-    const dataBarangButton = compiled.querySelector<HTMLButtonElement>(
-      'button[aria-label="Expand Data Barang"]',
-    );
-    expect(dataBarangButton).toBeTruthy();
-    expect(compiled.querySelector('#menu-children-3')?.getAttribute('aria-hidden')).toBe('true');
-
-    dataBarangButton?.click();
-    fixture.detectChanges();
-
-    expect(dataBarangButton?.getAttribute('aria-expanded')).toBe('true');
-    expect(compiled.querySelector('#menu-children-3')?.getAttribute('aria-hidden')).toBe('false');
     expect(compiled.textContent).toContain('CRUD Features');
   });
 });

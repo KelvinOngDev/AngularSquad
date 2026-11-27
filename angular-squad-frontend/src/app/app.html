@@ -1,17 +1,95 @@
-@if (auth.isAuthenticated()) {
-  <div class="min-h-screen bg-slate-100">
-    <app-sidebar class="fixed inset-y-0 left-0 z-30 block h-full w-16 md:w-64"></app-sidebar>
-
-    <div class="flex min-h-screen min-w-0 flex-col pl-16 md:pl-64">
-      <header class="border-b border-slate-200 bg-white px-4 py-4 md:px-8">
-        <h1 class="text-lg font-bold text-slate-900 md:text-xl">Angular Squad</h1>
-      </header>
-
-      <main class="min-w-0 flex-1 p-4 md:p-8">
-        <router-outlet></router-outlet>
-      </main>
-    </div>
-  </div>
+@if (isLoginRoute()) {
+  <router-outlet />
 } @else {
-  <router-outlet></router-outlet>
+<div class="wrapper" [class.sidebar-collapse]="isSidebarCollapsed()">
+
+  <!-- 1. Top Navbar (Main Header) -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="#" role="button" aria-label="Toggle sidebar" (click)="toggleSidebar($event)">
+          <i class="fas fa-bars"></i>
+        </a>
+      </li>
+      <li class="nav-item d-none d-sm-inline-block">
+        <span class="nav-link font-weight-bold text-dark">Angular Squad</span>
+      </li>
+    </ul>
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="#" role="button" aria-label="Toggle fullscreen" (click)="toggleFullscreen($event)">
+          <i class="fas fa-expand-arrows-alt"></i>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- 2. Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4" style="background: #252a31;">
+    <!-- Brand Logo -->
+    <a routerLink="/dashboard" class="brand-link">
+      <i class="fab fa-angular brand-image img-circle elevation-2 ml-3 mr-2 text-danger" style="font-size: 1.6rem; line-height: 1.8rem;"></i>
+      <span class="brand-text font-weight-bold">Belajar Angular</span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar d-flex flex-column justify-content-between" style="height: calc(100vh - 3.5rem);">
+      <!-- Sidebar Menu (Migrated from your existing sidebar) -->
+      <nav class="mt-3">
+        <ul class="nav nav-pills nav-sidebar flex-column" role="menu">
+
+          @if (isMenuLoading()) {
+            <li class="nav-item"><span class="nav-link">Memuat menu...</span></li>
+          } @else if (menuError(); as error) {
+            <li class="nav-item">
+              <span class="nav-link text-danger">{{ error }}</span>
+              <button type="button" class="btn btn-link text-light" (click)="reloadMenus()">Coba lagi</button>
+            </li>
+          } @else if (menus().length === 0) {
+            <li class="nav-item"><span class="nav-link">Belum ada menu aktif.</span></li>
+          } @else {
+            @for (menu of menus(); track menu.id) {
+              <app-sidebar-menu-item [menu]="menu" />
+            }
+          }
+
+        </ul>
+      </nav>
+
+      <!-- Bottom Logout Link (Keluar) -->
+      <nav class="mb-3 border-top border-secondary pt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column">
+          <li class="nav-item">
+            <a href="javascript:void(0)" (click)="logout()" class="nav-link text-danger">
+              <i class="nav-icon fas fa-sign-out-alt"></i>
+              <p>Keluar</p>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </aside>
+
+  <!-- 3. Content Wrapper (All routed pages render inside here) -->
+  <div class="content-wrapper">
+    <section class="content pt-3">
+      <div class="container-fluid">
+        <router-outlet />
+      </div>
+    </section>
+  </div>
+
+  <!-- 4. Main Footer (AdminLTE Footer Section) -->
+  <footer class="main-footer">
+    <strong>Copyright &copy; 2026 <a href="#">Angular Squad</a>.</strong>
+    All rights reserved.
+    <div class="float-right d-none d-sm-inline-block">
+      <b>AdminLTE</b> 3.2 | <b>Angular</b> 21
+    </div>
+  </footer>
+
+</div>
 }

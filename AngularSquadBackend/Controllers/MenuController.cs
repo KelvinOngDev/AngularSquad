@@ -217,20 +217,36 @@ public class MenuController(AppDbContext dbContext) : ControllerBase
     private static List<MenuDto> BuildMenuTree(IReadOnlyCollection<MenuDto> menus)
     {
         var menusById = menus.ToDictionary(menu => menu.Id);
-        var rootMenus = new List<MenuDto>();
-        foreach (var menu in menus)
+        var rootMenus = menus
+            .Where(menu => menu.ParentId == 0)
+            .ToList();
+
+        foreach (var root in rootMenus)
         {
-            if (menu.ParentId == 0)
-            {
-                rootMenus.Add(menu);
-            }
-            else if (menusById.TryGetValue(menu.ParentId, out var parent))
-            {
-                parent.Children.Add(menu);
-            }
+            AttachChildren(root, menusById, new HashSet<int>());
         }
 
         return rootMenus;
+    }
+
+    private static void AttachChildren(
+        MenuDto parent,
+        IReadOnlyDictionary<int, MenuDto> menusById,
+        HashSet<int> visited)
+    {
+        if (!visited.Add(parent.Id))
+        {
+            return;
+        }
+
+        foreach (var child in menusById.Values.Where(menu => menu.ParentId == parent.Id))
+        {
+            if (!visited.Contains(child.Id))
+            {
+                parent.Children.Add(child);
+                AttachChildren(child, menusById, visited);
+            }
+        }
     }
 
     private static MenuDto ToDto(Menu menu) => new()

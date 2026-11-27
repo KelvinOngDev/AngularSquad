@@ -1,17 +1,19 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   imports: [FormsModule],
   templateUrl: './login.html',
+  styleUrl: './login.css',
 })
 export class Login {
   private readonly auth = inject(AuthService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   protected username = '';
   protected password = '';
@@ -28,7 +30,9 @@ export class Login {
     this.auth.login(this.username.trim(), this.password).subscribe({
       next: () => {
         this.isSubmitting = false;
-        void this.router.navigateByUrl('/dashboard');
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+        const destination = returnUrl?.startsWith('/') ? returnUrl : '/dashboard';
+        void this.router.navigateByUrl(destination);
       },
       error: (error: unknown) => {
         this.isSubmitting = false;

@@ -1,1 +1,146 @@
-<p>dashboard works!</p>
+<section class="dashboard-page">
+  <header class="dashboard-header">
+    <div>
+      <p class="dashboard-kicker">Ringkasan sistem</p>
+      <h1>Selamat datang, {{ currentUser?.fullName || currentUser?.username || 'Pengguna' }}</h1>
+      <p class="dashboard-date">{{ today }}</p>
+    </div>
+    <button type="button" class="refresh-button" (click)="reload()" [disabled]="isLoading()">
+      <i class="fas fa-sync-alt" [class.fa-spin]="isLoading()"></i>
+      <span>{{ isLoading() ? 'Memuat...' : 'Muat ulang' }}</span>
+    </button>
+  </header>
+
+  @if (hasError()) {
+    <div class="dashboard-error" role="alert">
+      <i class="fas fa-exclamation-circle"></i>
+      <div>
+        <strong>Data belum dapat dimuat</strong>
+        <span>Periksa koneksi backend, lalu muat ulang halaman.</span>
+      </div>
+      <button type="button" (click)="reload()">Coba lagi</button>
+    </div>
+  }
+
+  <div class="metric-grid" [class.is-loading]="isLoading()">
+    <article class="metric-card">
+      <div class="metric-icon metric-icon-blue"><i class="fas fa-user-md"></i></div>
+      <div>
+        <span>Total Dokter</span>
+        <strong>{{ isLoading() ? '—' : doctorCount() }}</strong>
+      </div>
+    </article>
+    <article class="metric-card">
+      <div class="metric-icon metric-icon-green"><i class="fas fa-calendar-check"></i></div>
+      <div>
+        <span>Pendaftaran Hari Ini</span>
+        <strong>{{ isLoading() ? '—' : todayRegistrationCount() }}</strong>
+      </div>
+    </article>
+    <article class="metric-card">
+      <div class="metric-icon metric-icon-amber"><i class="fas fa-hourglass-half"></i></div>
+      <div>
+        <span>Menunggu Validasi</span>
+        <strong>{{ isLoading() ? '—' : pendingRegistrationCount() }}</strong>
+      </div>
+    </article>
+    <article class="metric-card">
+      <div class="metric-icon metric-icon-red"><i class="fas fa-heartbeat"></i></div>
+      <div>
+        <span>Kapasitas Harian</span>
+        <strong>{{ isLoading() ? '—' : totalCapacity() }}</strong>
+      </div>
+    </article>
+  </div>
+
+  <div class="dashboard-grid">
+    <article class="panel inventory-panel">
+      <div class="panel-header">
+        <div>
+          <p>Dokter</p>
+          <h2>Penggunaan Kapasitas Hari Ini</h2>
+        </div>
+        <span class="panel-badge">{{ activeDoctorCount() }} aktif</span>
+      </div>
+
+      @if (doctors().length === 0 && !isLoading()) {
+        <p class="empty-state">Belum ada data dokter.</p>
+      } @else {
+        <div class="inventory-chart">
+          @for (doctor of doctors(); track doctor.id) {
+            <div class="inventory-row">
+              <div class="inventory-label">
+                <span>{{ doctor.nama_dokter }}</span>
+                <strong>{{ doctor.pendaftaran_hari_ini }} / {{ doctor.max_layanan_harian }}</strong>
+              </div>
+              <div class="inventory-track">
+                <div
+                  class="inventory-fill"
+                  [style.width.%]="doctor.max_layanan_harian > 0 ? doctor.pendaftaran_hari_ini / doctor.max_layanan_harian * 100 : 0"
+                  [class.inventory-low]="doctor.pendaftaran_hari_ini >= doctor.max_layanan_harian"
+                ></div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </article>
+
+    <article class="panel role-panel">
+      <div class="panel-header">
+        <div>
+          <p>Pendaftaran</p>
+          <h2>Jenis Layanan</h2>
+        </div>
+      </div>
+
+      @if (serviceStats().length === 0 && !isLoading()) {
+        <p class="empty-state">Belum ada pendaftaran hari ini.</p>
+      } @else {
+        <div class="role-content">
+          <div class="role-ring">
+            <div>
+              <strong>{{ todayRegistrationCount() }}</strong>
+              <span>pendaftaran</span>
+            </div>
+          </div>
+          <div class="role-list">
+            @for (service of serviceStats(); track service.name) {
+              <div class="role-item">
+                <span class="role-dot"></span>
+                <span class="role-name">{{ service.name }}</span>
+                <strong>{{ service.count }}</strong>
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </article>
+
+    <article class="panel activity-panel">
+      <div class="panel-header">
+        <div>
+          <p>Aktivitas</p>
+          <h2>Status Sistem</h2>
+        </div>
+      </div>
+      <div class="activity-list">
+        <div class="activity-item">
+          <div class="activity-icon"><i class="fas fa-user-md"></i></div>
+          <div><strong>{{ activeDoctorCount() }} dokter aktif</strong><span>{{ doctorCount() }} dokter terdaftar</span></div>
+          <span class="status-dot status-success"></span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon"><i class="fas fa-check-circle"></i></div>
+          <div><strong>{{ approvedRegistrationCount() }} pendaftaran disetujui</strong><span>{{ pendingRegistrationCount() }} masih menunggu</span></div>
+          <span class="status-dot status-success"></span>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon"><i class="fas fa-database"></i></div>
+          <div><strong>Koneksi database</strong><span>{{ hasError() ? 'Perlu pemeriksaan' : 'Berjalan normal' }}</span></div>
+          <span class="status-dot" [class.status-success]="!hasError()" [class.status-error]="hasError()"></span>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>

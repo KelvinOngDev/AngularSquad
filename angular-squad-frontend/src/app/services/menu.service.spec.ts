@@ -53,4 +53,19 @@ describe('MenuService', () => {
     expect(request.request.body).toEqual(ids);
     request.flush(response);
   });
+
+  it('notifies the sidebar after a menu is deleted', () => {
+    let menuChanged = false;
+    service.menuChanges$.subscribe(() => {
+      menuChanged = true;
+    });
+
+    service.deleteMenu(4).subscribe();
+
+    const request = httpTesting.expectOne('https://localhost:7001/api/menu/4');
+    expect(request.request.method).toBe('DELETE');
+    request.flush(null);
+
+    expect(menuChanged).toBeTrue();
+  });
 });

@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
-import { of } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { App } from './app';
 import { AuthService } from './services/auth.service';
 import { MenuService } from './services/menu.service';
@@ -12,7 +12,10 @@ describe('App', () => {
       providers: [
         provideRouter([]),
         { provide: AuthService, useValue: { isAuthenticated: () => false } },
-        { provide: MenuService, useValue: { getMenus: () => of([]) } },
+        {
+          provide: MenuService,
+          useValue: { getMenus: () => of([]), menuChanges$: EMPTY },
+        },
       ],
     }).compileComponents();
   });

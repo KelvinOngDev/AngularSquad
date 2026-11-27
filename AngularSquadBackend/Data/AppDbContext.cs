@@ -23,9 +23,16 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<Barang>()
-            .Property(barang => barang.Harga)
-            .HasPrecision(18, 2);
+        modelBuilder.Entity<Barang>(entity =>
+        {
+            entity.ToTable("table_barang");
+            entity.HasKey(barang => barang.Id);
+            entity.Property(barang => barang.Id).HasColumnName("id");
+            entity.Property(barang => barang.NamaBarang).HasColumnName("nama_barang");
+            entity.Property(barang => barang.Harga).HasColumnName("harga").HasPrecision(12, 2);
+            entity.Property(barang => barang.Stok).HasColumnName("stok");
+            entity.Ignore(barang => barang.KodeBarang);
+        });
 
         modelBuilder.Entity<Dokter>(entity =>
         {

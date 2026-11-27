@@ -1,5 +1,5 @@
 <div class="flex justify-center p-6">
-  <div class="flex h-[560px] w-full max-w-2xl flex-col rounded-xl border border-gray-200 bg-white shadow-md">
+  <div class="flex h-140 w-full max-w-2xl flex-col rounded-xl border border-gray-200 bg-white shadow-md">
     <div class="flex items-center justify-between border-b border-gray-200 px-6 py-4">
       <div>
         <h2 class="text-lg font-bold text-gray-800">SignalR Live Chat</h2>
@@ -64,7 +64,7 @@
                 {{ item.user }} • {{ item.time }}
               </span>
               <div
-                class="max-w-xs break-words rounded-2xl px-4 py-2.5 text-sm shadow-sm md:max-w-md"
+                class="max-w-xs wrap-break-word rounded-2xl px-4 py-2.5 text-sm shadow-sm md:max-w-md"
                 [class.bg-blue-600]="item.user === userName"
                 [class.text-white]="item.user === userName"
                 [class.bg-white]="item.user !== userName"
